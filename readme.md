@@ -1,0 +1,1 @@
+Lumios is an AI-powered health companion that tracks hydration and habits, provides personalized insights, and enables natural voice interactions to help users build healthier daily routines.
