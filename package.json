@@ -1,0 +1,16 @@
+{
+  "name": "lumios-mern",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "frontend": "npm run dev --prefix Frontend",
+    "backend": "npm run dev --prefix Backend",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}
