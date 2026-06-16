@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { BASE_URL } from "../utils/constant";
 
 export default function Authentication() {
   const location = useLocation();
@@ -30,15 +31,31 @@ export default function Authentication() {
     return true;
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     try {
+      const response = await axios.post(
+        BASE_URL + "/signup",
+        {
+          authDetails,
+        },
+        { withCredentials: true },
+      );
     } catch (err) {
       setError(err?.message || "Something went wrong!!");
     }
   };
 
-  const handleLogIn = () => {
+  const handleLogIn = async () => {
     try {
+      const response = await axios.post(
+        BASE_URL + "/login",
+        {
+          authDetails,
+        },
+        {
+          withCredentials: true,
+        },
+      );
     } catch (err) {
       setError(err?.message || "Something went wrong!!");
     }
@@ -119,7 +136,10 @@ export default function Authentication() {
           )}
 
           <p className="mt-2 text-[14px] text-red-600">{error}</p>
-          <button className="btn btn-primary mt-4 w-full">
+          <button
+            className="btn btn-primary mt-4 w-full"
+            onClick={isLogin ? handleLogIn : handleSignUp}
+          >
             {isLogin ? "Log In" : "Create Account"}
           </button>
           <p
