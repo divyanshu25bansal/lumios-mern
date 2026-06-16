@@ -1,74 +1,120 @@
+import { Link } from "react-router";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+
 export default function Onboarding() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-[#0d0a33] via-[#8332b1] to-[#0d0a33] text-white">
-      <div className="navbar px-6">
-        <img src="/icon.png" alt="Lumios" className="w-12" />
-        <h2 className="ml-2 text-3xl font-semibold">Lumios</h2>
-      </div>
+    <div className="min-h-screen bg-linear-to-b from-[#0d0a33] via-[#8332b1] to-[#0d0a33] text-white">
+      <Header />
+      {/* Navbar */}
 
-      <main className="flex flex-1 flex-col items-center justify-center text-center px-4">
+      {/* Hero Section */}
+      <main className="flex flex-col items-center justify-center text-center px-4 mt-6">
         <img src="/icon.png" alt="Lumios" className="w-60 sm:w-72 mb-8" />
 
-        <h2 className="text-4xl font-bold max-w-2xl">
+        <h2 className="text-4xl md:text-6xl font-bold max-w-3xl">
           Understand yourself better every day
         </h2>
 
-        <p className="mt-4 max-w-md text-lg opacity-80">
-          Your personal health companion for a healthier, happier you.
+        <p className="mt-6 max-w-xl text-lg opacity-80">
+          Your personal health companion for a healthier, happier, and more
+          balanced life.
         </p>
 
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-          <button className="btn btn-primary rounded-3xl px-7">
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <Link className="btn btn-primary rounded-full px-8" to={"/signup"}>
             Get Started
-          </button>
+          </Link>
 
-          <button className="btn btn-ghost text-white rounded-3xl">
+          <Link className="btn btn-ghost text-white rounded-full" to={"/login"}>
             I already have an account
-          </button>
+          </Link>
         </div>
       </main>
 
-      {/* footer */}
-      <footer className="footer footer-horizontal bg-transparent text-neutral-content items-center p-4 flex justify-end-safe">
-        <aside className="grid-flow-col items-center">
-          <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
-        </aside>
-        <nav className="grid-flow-col gap-4">
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-            </svg>
-          </a>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
-            </svg>
-          </a>
-          <a>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              className="fill-current"
-            >
-              <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
-            </svg>
-          </a>
-        </nav>
-      </footer>
+      {/* Features */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6 space-y-32">
+          {/* Card 1 */}
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <img
+              src="https://picsum.photos/800/500?random=1"
+              alt="Feature"
+              className="rounded-3xl shadow-2xl w-full"
+            />
+
+            <h3 className="text-4xl font-bold mb-4">
+              Meet your personal health companion.
+            </h3>
+          </div>
+
+          {/* Card 2 */}
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-4xl font-bold mb-4">AI Powered Insights</h3>
+
+              <p className="text-l leading-relaxed">
+                Get personalized recommendations and actionable insights
+                generated from your daily habits and health patterns.
+              </p>
+            </div>
+
+            <img
+              src="https://picsum.photos/800/500?random=2"
+              alt="Feature"
+              className="rounded-3xl shadow-2xl w-full"
+            />
+          </div>
+
+          {/* Card 3 */}
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <img
+              src="https://picsum.photos/800/500?random=3"
+              alt="Feature"
+              className="rounded-3xl shadow-2xl w-full"
+            />
+
+            <div>
+              <h3 className="text-4xl font-bold mb-4">Build Better Habits</h3>
+
+              <p className="text-lg  leading-relaxed">
+                Create routines, track progress, and stay motivated with smart
+                reminders and goal-based achievements.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 4 */}
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-4xl font-bold mb-4">
+                Understand Yourself Better
+              </h3>
+
+              <p className="text-lg  leading-relaxed">
+                Discover trends in your mood, energy, and lifestyle to make
+                informed decisions and improve your overall well-being.
+              </p>
+
+              <Link
+                className="btn btn-primary mt-8 rounded-full px-8"
+                to={"/signup"}
+              >
+                Create Account
+              </Link>
+            </div>
+
+            <img
+              src="https://picsum.photos/800/500?random=4"
+              alt="Feature"
+              className="rounded-3xl shadow-2xl w-full"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
