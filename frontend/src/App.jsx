@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import Onboarding from "./pages/Onboarding";
 
 function App() {
   return (
-    <>
-      <h1>Lumios MERN Stack Application</h1>
-    </>
+    <Routes>
+      <Route path="/" element={<Onboarding />} />
+    </Routes>
   );
 }
 
