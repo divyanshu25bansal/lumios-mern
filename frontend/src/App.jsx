@@ -1,10 +1,14 @@
-import { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import Onboarding from "./pages/Onboarding";
+import Authentication from "./pages/Auth";
 
 function App() {
   return (
-    <>
-      <h1>Lumios MERN Stack Application</h1>
-    </>
+    <Routes>
+      <Route path="/" element={<Onboarding />} />
+      <Route path="/login" element={<Authentication />} />
+      <Route path="/signup" element={<Authentication />} />
+    </Routes>
   );
 }
 

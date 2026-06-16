@@ -9,3 +9,6 @@
 ## branch api/models
 1. created required API infrastructure for the app.
 2. created initial mongoose models and used validator to validate passoword, email and profile picture.
+
+## branch authentication/frontend
+1. 
