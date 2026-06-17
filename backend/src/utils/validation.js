@@ -4,7 +4,7 @@ export function validateUserData(req) {
   const { firstName, lastName, email, password } =
     req.body.authDetails;
 
-  if (!firstName?.trim() || !lastName?.trim()) {
+  if (firstName && !firstName?.trim() || lastName && !lastName?.trim()) {
     throw new Error("Please enter a valid name");
   }
 

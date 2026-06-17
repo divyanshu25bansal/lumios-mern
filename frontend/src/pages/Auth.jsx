@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import { BASE_URL } from "../utils/constant";
+import { UserRedirectURL } from "../utils/userRedirectURL";
+import { UserContext } from "../context/UserContext";
 
 export default function Authentication() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(
     location.pathname === "/login" ? true : false,
   );
@@ -18,6 +21,9 @@ export default function Authentication() {
   });
 
   const [error, setError] = useState(null);
+
+  // context
+  const { user, setUser } = useContext(UserContext);
 
   // auth state change
   const authChange = () => {
@@ -40,8 +46,10 @@ export default function Authentication() {
         },
         { withCredentials: true },
       );
+      setUser(response.data.userInfo);
+      navigate(UserRedirectURL(user));
     } catch (err) {
-      setError(err?.message || "Something went wrong!!");
+      setError("Please enter valid credentials!!");
     }
   };
 
@@ -56,8 +64,10 @@ export default function Authentication() {
           withCredentials: true,
         },
       );
+      setUser(response.data.userInfo);
+      navigate(UserRedirectURL(user));
     } catch (err) {
-      setError(err?.message || "Something went wrong!!");
+      setError("Please enter valid credentials!!");
     }
   };
 
