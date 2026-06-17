@@ -156,7 +156,7 @@ setUser(...)
 5. Repeated patterns are strong indicators that helper functions or abstractions should be introduced.
 6. Small architectural decisions early on can prevent major refactors later.
 
-## Branch: `features/profile-edit`
+## Branch: `update/profile`
 
 ### Backend: Profile Edit API (`profileRouter.js`)
 
