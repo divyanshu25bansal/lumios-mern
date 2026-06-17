@@ -1,3 +1,8 @@
+import axios from "axios";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { BASE_URL } from "../utils/constant";
+import { Link } from "react-router-dom";
 import {
   LayoutDashboard,
   Droplets,
@@ -12,19 +17,30 @@ import {
 
 export default function Sidebar() {
   const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard },
-    { name: "Hydration", icon: Droplets },
-    { name: "Sleep", icon: Moon },
-    { name: "Habits", icon: CheckSquare },
-    { name: "Nutrition", icon: Apple },
-    { name: "AI Companion", icon: Bot },
-    { name: "Reports", icon: BarChart3 },
-    { name: "Profile", icon: User },
-    { name: "Log out", icon: LogOut },
+    { name: "Dashboard", icon: LayoutDashboard, url: "/dashboard" },
+    { name: "Hydration", icon: Droplets, url: "/hydration" },
+    { name: "Sleep", icon: Moon, url: "/sleep" },
+    { name: "Habits", icon: CheckSquare, url: "/habits" },
+    { name: "Nutrition", icon: Apple, url: "/nutrition" },
+    { name: "AI Companion", icon: Bot, url: "/profile" },
+    { name: "Reports", icon: BarChart3, url: "/profile" },
+    { name: "Profile", icon: User, url: "/profile" },
+    { name: "Log out", icon: LogOut, url: "" },
   ];
 
+  const { setUser } = useContext(UserContext);
+
+  const handleLogOut = async () => {
+    try {
+      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      setUser(null);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
-    <aside className="w-64 hidden md:block min-h-screen bg-base-200">
+<aside className="sticky top-0 h-screen w-64 hidden lg:block text-black border-r border-gray-200 shadow-[12px_0_30px_rgba(0,0,0,0.12)]">
       <div className="p-6">
         <div className="flex items-center gap-3">
           <img src="/icon.png" alt="logo" className="w-10" />
@@ -35,15 +51,18 @@ export default function Sidebar() {
       <ul className="menu w-full px-4 gap-2">
         {menuItems.map((item) => (
           <li key={item.name}>
-            <a>
+            <Link
+              to={item.url}
+              onClick={item.name === "Log out" ? handleLogOut : null}
+            >
               <item.icon size={25} />
               {item.name}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
-      <div className="absolute bottom-0 w-64 p-4">
-        <div className="card bg-transparen text-primary-content border-3 border-violet-900 rounded-2xl">
+      <div className="absolute bottom-0 w-64 p-4 hidden xl:block">
+        <div className="card bg-transparen border-3 border-violet-900 rounded-2xl">
           <div className="card-body">
             <h2 className="card-title">Upgrade to Pro</h2>
             <p className="text-sm">

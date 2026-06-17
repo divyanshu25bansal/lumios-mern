@@ -1,9 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { UserContext } from "../context/UserContext";
 import { ChevronRight, LogOut, Camera } from "lucide-react";
+import axios from "axios";
+import { BASE_URL } from "../utils/constant";
+import { useNavigate } from "react-router";
 
 export default function Profile() {
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
   const [profile, setProfile] = useState("profile");
   const settingsItems = [
     "Change Password",
@@ -12,13 +17,23 @@ export default function Profile() {
     "Delete Account",
   ];
 
+  const handleLogOut = async () => {
+    try {
+      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      setUser(null);
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="flex">
       <Sidebar />
 
-      <div className="flex-1 p-8 bg-white min-h-screen text-black">
+      <div className="flex-1 p-4 md:p-8 bg-white min-h-screen text-black">
         {/* Header */}
-        <div className="flex items-center justify-between">
+       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-4xl font-bold text-black">Profile</h1>
             <p className="text-md opacity-80 text-black">
@@ -119,7 +134,7 @@ export default function Profile() {
                   <div className="card-body">
                     <h2 className="font-semibold mb-4">Personal Information</h2>
 
-                    <div className="grid md:grid-cols-2 gap-4">
+                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                       <div>
                         <label className="label">
                           <span className="label-text">First Name</span>
@@ -235,7 +250,10 @@ export default function Profile() {
                       ))}
                       <div className="flex gap-2 items-center p-3.5 cursor-pointer border-gray-200  hover:bg-gray-50 px-2 rounded-lg transition">
                         <LogOut className="text-red-600" />
-                        <button className="text-red-600 cursor-pointer">
+                        <button
+                          className="text-red-600 cursor-pointer"
+                          onClick={handleLogOut}
+                        >
                           Log Out
                         </button>
                       </div>

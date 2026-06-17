@@ -8,6 +8,7 @@ import sleepRouter from "./routes/sleepRouter.js";
 import hydrationRouter from "./routes/hydrationRouter.js";
 import nutritionRouter from "./routes/nutritionRouter.js";
 import habitsRouter from "./routes/habitsRouter.js";
+import profileRouter from "./routes/profileRouter.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use("/", habitsRouter);
 app.use("/", hydrationRouter);
 app.use("/", nutritionRouter);
 app.use("/", sleepRouter);
+app.use("/", profileRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello Divyanshu!");
