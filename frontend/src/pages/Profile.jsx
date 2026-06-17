@@ -3,13 +3,34 @@ import Sidebar from "../components/Sidebar";
 import { UserContext } from "../context/UserContext";
 import { ChevronRight, LogOut, Camera } from "lucide-react";
 import axios from "axios";
+import { toast, Toaster } from "sonner";
 import { BASE_URL } from "../utils/constant";
 import { useNavigate } from "react-router";
+import { checkUserProfileData } from "../utils/userRedirectURL";
+
+const createProfileObject = (userData) => ({
+  firstName: userData.firstName || "",
+  lastName: userData.lastName || "",
+  gender: userData.gender || "",
+  height: userData.height || "",
+  weight: userData.weight || "",
+  age: userData.age || "",
+});
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [profile, setProfile] = useState("profile");
+  const [isEdit, setIsEdit] = useState(false);
+  const [profileData, setProfileData] = useState(createProfileObject({}));
+  const [originalProfileData, setOriginalProfileData] = useState(profileData);
+
+  useEffect(() => {
+    const initialProfile = createProfileObject(user);
+    setProfileData(initialProfile);
+    setOriginalProfileData(initialProfile);
+  }, [user]);
+
   const settingsItems = [
     "Change Password",
     "Notification Settings",
@@ -27,13 +48,48 @@ export default function Profile() {
     }
   };
 
+  const handleSave = async () => {
+    const toastId = toast.loading("Saving profile...");
+
+    try {
+      if (!checkUserProfileData(profileData)) {
+        toast.error("Please fill all required fields", { id: toastId });
+        return false;
+      }
+
+      const response = await axios.patch(
+        BASE_URL + "/profile/edit",
+        profileData,
+        { withCredentials: true },
+      );
+
+      const savedData = response.data?.data || response.data;
+      setProfileData(savedData);
+      setOriginalProfileData(savedData);
+      setUser(savedData);
+      setIsEdit(false);
+      toast.success("Profile saved successfully", { id: toastId });
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.error || err.message || "Failed to save profile";
+      toast.error(errorMessage, { id: toastId });
+    }
+  };
+
+  const handleDiscard = () => {
+    setProfileData(originalProfileData);
+    setIsEdit(false);
+    toast("Changes discarded", { variant: "default" });
+  };
+
   return (
     <div className="flex">
+      <Toaster richColors position="top-center" duration={2000} />
       <Sidebar />
 
       <div className="flex-1 p-4 md:p-8 bg-white min-h-screen text-black">
         {/* Header */}
-       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-4xl font-bold text-black">Profile</h1>
             <p className="text-md opacity-80 text-black">
@@ -41,9 +97,27 @@ export default function Profile() {
             </p>
           </div>
 
-          <button className="btn bg-blue-600 hover:bg-blue-700 border-none text-white rounded-full px-8">
-            Edit Profile
-          </button>
+          <div className="flex flex-wrap gap-3 items-center">
+            {isEdit && (
+              <button
+                onClick={handleDiscard}
+                className="btn btn-outline text-black rounded-full px-8 border-gray-300 hover:bg-gray-100"
+              >
+                Discard
+              </button>
+            )}
+
+            <button
+              onClick={() => (isEdit ? handleSave() : setIsEdit(true))}
+              className={`btn text-white rounded-full px-8 ${
+                !isEdit
+                  ? "bg-blue-600 hover:bg-blue-700 border-none"
+                  : "bg-pink-700 hover:bg-pink-700 border-none"
+              }`}
+            >
+              {isEdit ? "Save Profile" : "Edit Profile"}
+            </button>
+          </div>
         </div>
 
         {/* Main Container */}
@@ -134,7 +208,7 @@ export default function Profile() {
                   <div className="card-body">
                     <h2 className="font-semibold mb-4">Personal Information</h2>
 
-                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                       <div>
                         <label className="label">
                           <span className="label-text">First Name</span>
@@ -142,8 +216,15 @@ export default function Profile() {
 
                         <input
                           className="input w-full bg-white border border-gray-200 focus:outline-none"
-                          value="Divyanshu"
-                          readOnly
+                          placeholder="Captain Jack"
+                          value={profileData.firstName}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              firstName: e.target.value,
+                            }))
+                          }
+                          readOnly={!isEdit ? true : false}
                         />
                       </div>
 
@@ -154,8 +235,15 @@ export default function Profile() {
 
                         <input
                           className="input w-full bg-white border border-gray-200 focus:outline-none"
-                          value="Bansal"
-                          readOnly
+                          placeholder="sparrow"
+                          value={profileData.lastName}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              lastName: e.target.value,
+                            }))
+                          }
+                          readOnly={!isEdit ? true : false}
                         />
                       </div>
 
@@ -165,8 +253,10 @@ export default function Profile() {
                         </label>
 
                         <input
-                          className="input w-full bg-white border border-gray-200 focus:outline-none"
-                          value="divyanshu@email.com"
+                          className="input w-full bg-white border border-gray-200 focus:outline-none cursor-not-allowed"
+                          placeholder="blackPearl@davyjones.com"
+                          type="email"
+                          value={user.email}
                           readOnly
                         />
                       </div>
@@ -178,9 +268,16 @@ export default function Profile() {
 
                         <select
                           className="input cursor-default w-full bg-white border border-gray-200 focus:outline-none"
-                          value="Male"
-                          readOnly
+                          value={profileData.gender}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              gender: e.target.value,
+                            }))
+                          }
+                          readOnly={!isEdit ? true : false}
                         >
+                          <option value="">Select Gender</option>
                           <option value="male">Male</option>
                           <option value="female">Female</option>
                           <option value="other">Prefer not to say</option>
@@ -194,8 +291,15 @@ export default function Profile() {
 
                         <input
                           className="input w-full bg-white border border-gray-200 focus:outline-none"
-                          value="20"
-                          readOnly
+                          value={profileData.age}
+                          placeholder="50"
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              age: e.target.value,
+                            }))
+                          }
+                          readOnly={!isEdit ? true : false}
                         />
                       </div>
 
@@ -206,8 +310,15 @@ export default function Profile() {
 
                         <input
                           className="input w-full bg-white border border-gray-200 focus:outline-none"
-                          value="175 cm"
-                          readOnly
+                          value={profileData.height}
+                          placeholder="175"
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              height: e.target.value,
+                            }))
+                          }
+                          readOnly={!isEdit ? true : false}
                         />
                       </div>
 
@@ -218,8 +329,15 @@ export default function Profile() {
 
                         <input
                           className="input w-full bg-white border border-gray-200 focus:outline-none"
-                          value="70 kg"
-                          readOnly
+                          value={profileData.weight}
+                          placeholder="68"
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              weight: e.target.value,
+                            }))
+                          }
+                          readOnly={!isEdit ? true : false}
                         />
                       </div>
                     </div>

@@ -4,8 +4,7 @@ export const checkUserProfileData = (userData) => {
     userData?.lastName &&
     userData?.age &&
     userData?.height &&
-    userData?.weight &&
-    userData?.goal,
+    userData?.weight,
   );
 };
 

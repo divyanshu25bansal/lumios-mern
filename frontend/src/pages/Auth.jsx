@@ -47,7 +47,7 @@ export default function Authentication() {
         { withCredentials: true },
       );
       setUser(response.data.userInfo);
-      navigate(UserRedirectURL(user));
+      navigate(UserRedirectURL(response.data.userInfo));
     } catch (err) {
       setError("Please enter valid credentials!!");
     }
@@ -65,7 +65,7 @@ export default function Authentication() {
         },
       );
       setUser(response.data.userInfo);
-      navigate(UserRedirectURL(user));
+      navigate(UserRedirectURL(response.data.userInfo));
     } catch (err) {
       setError("Please enter valid credentials!!");
     }
