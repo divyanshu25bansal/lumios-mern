@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 
 export default function Loading() {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#05031A] via-[#271783] to-[#41057ea7]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-linear-to-b from-[#05031A] via-[#271783] to-[#41057ea7]">
       {/* Background Glow */}
       <motion.div
-        className="absolute w-[700px] h-[700px] rounded-full bg-violet-500/20 blur-[140px]"
+        className="absolute w-175 h-175 rounded-full bg-violet-500/20 blur-[140px]"
         animate={{
           scale: [1, 1.25, 1],
           opacity: [0.3, 0.8, 0.3],
@@ -19,7 +19,7 @@ export default function Loading() {
 
       {/* Secondary Glow */}
       <motion.div
-        className="absolute w-[500px] h-[500px] rounded-full bg-blue-500/20 blur-[120px]"
+        className="absolute w-125 h-125 rounded-full bg-blue-500/20 blur-[120px]"
         animate={{
           scale: [1.1, 1.4, 1.1],
           opacity: [0.2, 0.5, 0.2],
@@ -45,7 +45,7 @@ export default function Loading() {
         <motion.img
           src="/lumios_loader.png"
           alt="Lumios"
-          className="relative z-20 w-[550px] md:w-[750px] select-none"
+          className="relative z-20 w-137.5 md:w-187.5 select-none"
           draggable={false}
           animate={{
             y: [0, -20, 0],
