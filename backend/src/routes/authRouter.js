@@ -27,10 +27,11 @@ authRouter.post("/signup", async (req, res) => {
       expires: new Date(Date.now() + 7 * 24 * 3600000),
     });
 
-    await newUser.save();
+    const savedUser = await newUser.save();
     res.json({
       success: true,
       message: "New user has been created.",
+      userInfo: savedUser,
     });
   } catch (error) {
     res.status(400).json({
@@ -42,6 +43,7 @@ authRouter.post("/signup", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   try {
+    validateUserData(req);
     const { email, password } = req.body.authDetails;
     const user = await User.findOne({ email: email });
 
@@ -57,7 +59,11 @@ authRouter.post("/login", async (req, res) => {
         sameSite: "none",
         expires: new Date(Date.now() + 7 * 24 * 3600000),
       });
-      res.send("Successfully Logged In");
+      res.json({
+        success: true,
+        message: "Successfully Logged In.",
+        userInfo: user,
+      });
     } else {
       throw new Error("Credential not found!");
     }
