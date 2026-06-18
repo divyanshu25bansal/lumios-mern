@@ -44,4 +44,20 @@ profileRouter.patch("/profile/edit", verifyAuth, async (req, res) => {
   }
 });
 
+profileRouter.delete("/profile", verifyAuth, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user._id);
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.status(200).send("User account deleted successfully!!");
+  } catch (err) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 export default profileRouter;

@@ -82,6 +82,18 @@ export default function Profile() {
     toast("Changes discarded", { variant: "default" });
   };
 
+  const handleDeleteProfile = async () => {
+    try {
+      await axios.delete(BASE_URL + "/profile", {
+        withCredentials: true,
+      });
+      setUser(null);
+      navigate("/");
+    } catch (err) {
+      toast.error("Failed to delete profile");
+    }
+  };
+
   return (
     <div className="flex">
       <Toaster richColors position="top-center" duration={2000} />
@@ -267,7 +279,8 @@ export default function Profile() {
                         </label>
 
                         <select
-                          className="input cursor-default w-full bg-white border border-gray-200 focus:outline-none"
+                          className={`input cursor-default w-full bg-white border border-gray-200 focus:outline-none
+                            ${!isEdit && "pointer-events-none"}`}
                           value={profileData.gender}
                           onChange={(e) =>
                             setProfileData((prev) => ({
@@ -359,6 +372,11 @@ export default function Profile() {
                       </div>
                       {settingsItems.map((item) => (
                         <div
+                          onClick={() =>
+                            item === "Delete Account"
+                              ? handleDeleteProfile()
+                              : null
+                          }
                           key={item}
                           className="flex justify-between items-center py-3.5 border-b border-gray-200 cursor-pointer hover:bg-gray-50 px-2 rounded-lg transition"
                         >
