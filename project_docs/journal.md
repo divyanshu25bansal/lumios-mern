@@ -230,3 +230,33 @@ React state updates are asynchronous. Newly updated state should not be relied u
 - Maintaining an "original" copy of data enables rollback and discard functionality.
 
 ---
+
+
+## Branch: `pages/dashboard`
+
+### Dashboard Redesign & UX Improvements
+
+#### UI Modernization
+
+1. Redesigned the dashboard with a cleaner and more modern wellness-focused interface.
+2. Improved visual hierarchy using:
+   - Gradient hero banners
+   - Elevated stat cards
+   - Better spacing and typography
+   - Consistent color palette
+
+3. Added responsive layouts for:
+   - Desktop
+   - Tablet
+   - Mobile devices
+
+---
+
+### Dynamic Greeting System
+
+#### Features Added
+
+1. Implemented time-based greetings using:
+
+```js
+new Date().getHours();
