@@ -10,6 +10,7 @@ import Profile from "../pages/Profile";
 import Loading from "../pages/Loading";
 import { UserRedirectURL } from "../utils/userRedirectURL";
 import NotFound from "../pages/404";
+import Dashboard from "../pages/Dashboard";
 
 export default function AuthLoader() {
   const { user, setUser } = useContext(UserContext);
@@ -81,6 +82,7 @@ export default function AuthLoader() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<Profile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
