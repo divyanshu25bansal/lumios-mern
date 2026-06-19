@@ -231,7 +231,6 @@ React state updates are asynchronous. Newly updated state should not be relied u
 
 ---
 
-
 ## Branch: `pages/dashboard`
 
 ### Dashboard Redesign & UX Improvements
@@ -239,11 +238,13 @@ React state updates are asynchronous. Newly updated state should not be relied u
 #### UI Modernization
 
 1. Redesigned the dashboard with a cleaner and more modern wellness-focused interface.
+
 2. Improved visual hierarchy using:
    - Gradient hero banners
-   - Elevated stat cards
+   - Health stat cards
+   - Progress indicators
+   - Trend visualizations
    - Better spacing and typography
-   - Consistent color palette
 
 3. Added responsive layouts for:
    - Desktop
@@ -260,3 +261,155 @@ React state updates are asynchronous. Newly updated state should not be relied u
 
 ```js
 new Date().getHours();
+```
+
+2. Added contextual greetings for:
+   - Morning
+   - Afternoon
+   - Evening
+   - Night
+
+3. Introduced randomized wellness-focused messages during late hours to create a more engaging experience.
+
+#### Key Learnings
+
+- Small personalization features significantly improve perceived product quality.
+- Dynamic content makes dashboards feel more alive and user-centric.
+- Context-aware messaging increases user engagement without adding complexity.
+
+---
+
+## Branch: `pages/done`
+
+### Application Completion & Feature Integration
+
+This branch focused on completing the remaining user-facing pages, integrating backend APIs, and refining the overall user experience.
+
+---
+
+### Dashboard Integration
+
+#### Features Added
+
+1. Connected dashboard metrics to live user data.
+2. Added dynamic health summaries.
+3. Displayed progress across hydration, nutrition, habits, and wellness metrics.
+4. Improved navigation flow between tracking modules.
+5. Added reusable dashboard components for future scalability.
+
+#### Key Learnings
+
+- Centralized data fetching improves consistency across pages.
+- Clear visual summaries help users understand progress faster.
+- Reusable components reduce future maintenance effort.
+
+---
+
+### Hydration Tracking
+
+#### Features Added
+
+1. Built a dedicated hydration tracking page.
+2. Added daily water intake monitoring.
+3. Implemented quick-add hydration actions.
+4. Added hydration goals and progress calculations.
+5. Created hydration history and trend visualizations.
+6. Integrated hydration APIs for creating, updating, and retrieving daily hydration data.
+
+#### Challenges & Learnings
+
+- Daily tracking systems require careful date handling.
+- Consistent date storage prevents duplicate records.
+- Historical visualizations improve user motivation and retention.
+
+---
+
+### Nutrition System Planning
+
+#### Features Designed
+
+1. Defined a simplified nutrition workflow centered around the AI Companion.
+
+2. Eliminated the need for manual meal creation inside the Nutrition page.
+
+3. Designed a fixed AI questionnaire based on time of day:
+   - Morning
+   - Afternoon
+   - Evening/Night
+
+4. Planned automatic calculation of:
+   - Calories
+   - Protein
+   - Carbohydrates
+   - Fats
+
+5. Designed weekly average nutrition summaries for long-term tracking.
+
+#### Key Learnings
+
+- Collecting nutrition data through guided conversations reduces user friction.
+- Structured AI workflows provide more consistent data than free-form input.
+- Simplicity often leads to higher user adoption than feature-heavy solutions.
+
+---
+
+### Landing Page & Authentication Redesign
+
+#### Features Added
+
+1. Redesigned the onboarding experience with:
+   - Modern gradients
+   - Glassmorphism effects
+   - Improved CTAs
+   - Responsive layouts
+
+2. Redesigned login and signup pages.
+
+3. Improved form structure and visual hierarchy.
+
+4. Fixed browser autofill behavior by using proper autocomplete attributes.
+
+5. Enhanced mobile responsiveness across authentication screens.
+
+#### Key Learnings
+
+- First impressions heavily influence user perception.
+- Browser autofill behavior requires deliberate input configuration.
+- Modern UI patterns can significantly improve onboarding experience.
+
+---
+
+### Navigation & Layout Improvements
+
+#### Features Added
+
+1. Redesigned sidebar navigation.
+
+2. Improved active-state indicators.
+
+3. Added responsive mobile drawer behavior.
+
+4. Redesigned application header with:
+   - Sticky navigation
+   - Scroll-based actions
+   - Improved branding
+
+5. Standardized spacing, colors, and typography across pages.
+
+#### Key Learnings
+
+- Consistency across layouts improves usability.
+- Responsive navigation is critical for mobile accessibility.
+- Shared design systems accelerate future development.
+
+---
+
+### Overall Project Learnings
+
+1. Most development effort comes from integration and refinement rather than initial implementation.
+2. User experience improves dramatically through small iterative enhancements.
+3. Reusable components and helper functions reduce long-term complexity.
+4. Data visualization makes health metrics easier to understand.
+5. Daily tracking applications require careful handling of dates and user state.
+6. Guided workflows are often more effective than complex manual input systems.
+7. Consistent UI patterns create a more professional and maintainable application.
