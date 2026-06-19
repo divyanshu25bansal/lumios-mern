@@ -11,6 +11,10 @@ import Loading from "../pages/Loading";
 import { UserRedirectURL } from "../utils/userRedirectURL";
 import NotFound from "../pages/404";
 import Dashboard from "../pages/Dashboard";
+import Hydration from "../pages/Hydration";
+import Nutrition from "../pages/Nutrition";
+import Habits from "../pages/Habits";
+import SleepBoard from "../pages/Sleep";
 
 export default function AuthLoader() {
   const { user, setUser } = useContext(UserContext);
@@ -83,6 +87,10 @@ export default function AuthLoader() {
       <Route element={<ProtectedRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/hydration" element={<Hydration />} />
+        <Route path="/nutrition" element={<Nutrition />} />
+        <Route path="/habits" element={<Habits />} />
+        <Route path="/sleep" element={<SleepBoard />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

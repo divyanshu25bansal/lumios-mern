@@ -8,9 +8,9 @@ import UserProvider from "./context/UserContext";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <UserProvider>
-      <StrictMode>
+      {/* <StrictMode> */}
         <App />
-      </StrictMode>
+      {/* </StrictMode> */}
     </UserProvider>
   </BrowserRouter>,
 );
