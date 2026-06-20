@@ -47,18 +47,19 @@ export default function Sidebar({ children }) {
   };
 
   return (
-    <div className="drawer min-h-screen bg-slate-50 text-slate-800 lg:drawer-open">
+    <div className="drawer min-h-screen bg-base-200 text-base-content lg:drawer-open transition-colors duration-200">
       <input id="sidebar-drawer" type="checkbox" className="drawer-toggle" />
 
       <div className="drawer-content flex min-h-screen flex-col">
-        <div className="navbar top-0 z-30 border-b border-slate-200 bg-white/95 px-3 shadow-sm backdrop-blur lg:hidden">
+        {/* Mobile Header Navbar */}
+        <div className="navbar sticky top-0 z-30 border-b border-base-300 bg-base-100/95 px-3 shadow-xs backdrop-blur lg:hidden">
           <label htmlFor="sidebar-drawer" className="btn btn-square btn-ghost">
             <Menu size={22} />
           </label>
 
           <div className="ml-2 flex items-center gap-2">
             <img src="/icon.png" alt="Lumios logo" className="h-8 w-8" />
-            <span className="text-lg font-bold text-violet-700">Lumios</span>
+            <span className="text-lg font-bold text-primary tracking-tight">Lumios</span>
           </div>
         </div>
 
@@ -68,21 +69,20 @@ export default function Sidebar({ children }) {
       <div className="drawer-side z-40 lg:overflow-hidden">
         <label htmlFor="sidebar-drawer" className="drawer-overlay" />
 
-        <aside className="flex h-dvh w-72 flex-col overflow-hidden border-r border-slate-200 bg-white shadow-lg">
-          {/* Logo */}
-          <div className="shrink-0 border-b border-slate-100 px-5 py-4">
+        <aside className="flex h-dvh w-72 flex-col overflow-hidden border-r border-base-300 bg-base-100 shadow-md">
+          {/* Logo Heading Header */}
+          <div className="shrink-0 border-b border-base-200 px-5 py-4">
             <div className="flex items-center gap-3">
               <img src="/icon.png" alt="Lumios logo" className="h-10 w-10" />
 
               <div>
-                <h1 className="text-2xl font-bold text-violet-700">Lumios</h1>
-
-                <p className="text-xs text-slate-700">Health dashboard</p>
+                <h1 className="text-2xl font-bold text-primary tracking-tight">Lumios</h1>
+                <p className="text-xs text-base-content/60 font-medium">Health dashboard</p>
               </div>
             </div>
           </div>
 
-          {/* Menu */}
+          {/* Core Navigation Items */}
           <ul className="menu min-h-0 flex-1 gap-1 overflow-y-auto px-3 py-3">
             {menuItems.map((item) => (
               <li key={item.name}>
@@ -92,8 +92,8 @@ export default function Sidebar({ children }) {
                   className={({ isActive }) =>
                     `flex! h-11 items-center gap-3 rounded-xl px-3 py-0 font-medium leading-none transition-all ${
                       isActive
-                        ? "bg-violet-600 text-white shadow-md"
-                        : "text-slate-600 hover:bg-violet-50 hover:text-violet-700"
+                        ? "bg-primary text-primary-content shadow-xs"
+                        : "text-base-content/70 hover:bg-base-200 hover:text-base-content"
                     }`
                   }
                 >
@@ -104,19 +104,19 @@ export default function Sidebar({ children }) {
             ))}
           </ul>
 
-          {/* Bottom */}
-          <div className="shrink-0 space-y-2 p-3">
-            <div className="rounded-2xl border border-violet-100 bg-linear-to-br from-violet-50 to-indigo-50 p-3">
-              <div className="flex items-center gap-2 text-violet-700">
-                <Sparkles size={18} />
-                <h2 className="font-semibold">Upgrade to Pro</h2>
+          {/* Premium & User Settings Footer actions */}
+          <div className="shrink-0 space-y-2 p-3 border-t border-base-200">
+            <div className="rounded-2xl border border-primary/20 bg-linear-to-br from-primary/5 to-secondary/5 p-4">
+              <div className="flex items-center gap-2 text-primary">
+                <Sparkles size={18} className="fill-primary/20" />
+                <h2 className="font-semibold text-sm">Upgrade to Pro</h2>
               </div>
 
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1.5 text-xs text-base-content/70 leading-normal">
                 Unlock advanced insights and AI-powered recommendations.
               </p>
 
-              <button className="btn btn-sm mt-3 w-full border-0 bg-violet-600 text-white hover:bg-violet-700">
+              <button className="btn btn-primary btn-sm mt-3 w-full border-none text-primary-content shadow-xs">
                 Upgrade
               </button>
             </div>
@@ -124,7 +124,7 @@ export default function Sidebar({ children }) {
             <button
               type="button"
               onClick={handleLogOut}
-              className="btn btn-ghost w-full justify-start gap-3 rounded-xl text-red-500 hover:bg-red-50 hover:text-red-600"
+              className="btn btn-ghost w-full justify-start gap-3 rounded-xl text-error hover:bg-error/10 hover:text-error border-none"
             >
               <LogOut size={20} />
               Log out

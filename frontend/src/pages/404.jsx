@@ -1,11 +1,9 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { motion } from "framer-motion";
 
 const NotFound = () => {
-  const navigate = useNavigate();
-
   return (
-    <section className="min-h-screen bg-base-100 text-base-content flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden relative">
+    <section className="min-h-screen bg-base-100 text-base-content flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden relative transition-colors duration-200">
       {/* Soft background glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-105 h-105 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
 
@@ -21,8 +19,8 @@ const NotFound = () => {
           transition={{ delay: 0.08, duration: 0.5 }}
           className="mb-6"
         >
-          <span className="badge badge-primary badge-outline px-4 py-4 text-sm">
-            Page Not Found
+          <span className="badge badge-primary badge-outline px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">
+            Error 404
           </span>
         </motion.div>
 
@@ -30,7 +28,7 @@ const NotFound = () => {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.12, duration: 0.55 }}
-          className="text-[5rem] sm:text-[7rem] md:text-[8rem] lg:text-[9rem] font-black leading-none tracking-[-0.06em] text-primary"
+          className="text-[5rem] sm:text-[7rem] md:text-[8rem] lg:text-[9rem] font-black leading-none tracking-[-0.06em] text-primary select-none drop-shadow-xs"
         >
           404
         </motion.h1>
@@ -39,7 +37,7 @@ const NotFound = () => {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 mb-4"
+          className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2 mb-4 tracking-tight"
         >
           This page doesn’t exist.
         </motion.h2>
@@ -54,12 +52,18 @@ const NotFound = () => {
           Let’s get you back on track.
         </motion.p>
 
-        <Link
-          to={"/profile"}
-          className="badge badge-primary badge-outline px-4 py-4 text-sm"
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.34, duration: 0.5 }}
         >
-          Page Not Found
-        </Link>
+          <Link
+            to="/profile"
+            className="btn btn-primary px-8 rounded-2xl text-primary-content border-none shadow-md shadow-primary/10"
+          >
+            Back to Dashboard
+          </Link>
+        </motion.div>
       </motion.div>
     </section>
   );
