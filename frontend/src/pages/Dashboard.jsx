@@ -120,7 +120,7 @@ export default function Dashboard() {
             </div>
 
             {/* Streak Widget */}
-            <div className="relative overflow-hidden rounded-2xl px-5 py-3.5 bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 text-white shadow-md sm:w-64">
+            <div className="relative overflow-hidden rounded-2xl px-5 py-3.5 bg-linear-to-br from-orange-500 via-amber-500 to-yellow-500 text-white shadow-md sm:w-64">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white/90">
                 Current Streak
               </p>
@@ -138,7 +138,7 @@ export default function Dashboard() {
           </div>
 
           {/* Hero Insights Card */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary via-secondary to-accent p-6 lg:p-8 text-primary-content shadow-xl">
+          <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary via-secondary to-accent p-6 lg:p-8 text-primary-content shadow-xl">
             <div className="max-w-xl relative z-10">
               <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-80">
                 <TrendingUp size={14} />
@@ -153,7 +153,7 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="absolute right-0 bottom-0 top-0 w-1/3 hidden md:flex items-center justify-center opacity-15 pointer-events-none">
-              <Moon size={140} className="stroke-[1]" />
+              <Moon size={140} className="stroke-1" />
             </div>
           </div>
 
@@ -274,9 +274,9 @@ export default function Dashboard() {
                     className="flex flex-1 flex-col items-center h-full justify-end group relative"
                   >
                     {/* Visual Composite Bar Container */}
-                    <div className="w-full max-w-[20px] flex flex-col justify-end h-full rounded-t-md overflow-hidden bg-base-200">
+                    <div className="w-full max-w-5 flex flex-col justify-end h-full rounded-t-md overflow-hidden bg-base-200">
                       <div
-                        className="w-full bg-gradient-to-t from-primary to-info rounded-t-sm transition-all duration-500"
+                        className="w-full bg-linear-to-t from-primary to-info rounded-t-sm transition-all duration-500"
                         style={{ height: `${data.sleep}%` }}
                       />
                     </div>

@@ -222,7 +222,7 @@ export default function Habits() {
               </div>
 
               {/* High-Capacity Scroll Container explicitly keeping 10 habits highly scannable */}
-              <div className="space-y-2 max-h-[465px] overflow-y-auto pr-1 scrollbar-thin">
+              <div className="space-y-2 max-h-116.25 overflow-y-auto pr-1 scrollbar-thin">
                 {habits.map((habit) => {
                   const CustomIcon = habit.icon;
                   return (
@@ -338,7 +338,7 @@ export default function Habits() {
                       className="flex-1 flex flex-col items-center justify-end h-full group"
                     >
                       <div
-                        className="w-full max-w-[10px] bg-primary/80 group-hover:bg-primary rounded-t transition-all duration-300"
+                        className="w-full max-w-2.5 bg-primary/80 group-hover:bg-primary rounded-t transition-all duration-300"
                         style={{ height: bar.h }}
                       />
                       <span className="text-[9px] font-bold opacity-40 mt-2">
@@ -380,7 +380,7 @@ export default function Habits() {
               </div>
 
               {/* Dynamic Strategy Prompt Bubble Box */}
-              <div className="rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/5 p-4 shadow-xs flex flex-row items-start gap-2.5">
+              <div className="rounded-3xl border border-primary/20 bg-linear-to-br from-primary/10 to-secondary/5 p-4 shadow-xs flex flex-row items-start gap-2.5">
                 <div className="flex-1 text-xs">
                   <span className="font-bold text-base-content/90 flex items-center gap-1.5 mb-1">
                     <Sparkles size={14} className="text-primary" /> AI

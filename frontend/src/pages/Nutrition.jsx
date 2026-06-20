@@ -425,7 +425,7 @@ export default function Nutrition() {
                       className="flex-1 flex flex-col items-center justify-end h-full group"
                     >
                       <div
-                        className="w-full max-w-[10px] bg-primary/80 group-hover:bg-primary rounded-t transition-all duration-300"
+                        className="w-full max-w-2.5 bg-primary/80 group-hover:bg-primary rounded-t transition-all duration-300"
                         style={{ height: bar.h }}
                       />
                       <span className="text-[8px] font-bold opacity-40 mt-1.5">
@@ -437,7 +437,7 @@ export default function Nutrition() {
               </div>
 
               {/* Dynamic Wellness Prompt Bubble */}
-              <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 to-secondary/5 p-4 shadow-xs flex flex-row items-start gap-2.5">
+              <div className="rounded-xl border border-primary/20 bg-linear-to-br from-primary/10 to-secondary/5 p-4 shadow-xs flex flex-row items-start gap-2.5">
                 <div className="flex-1 text-[11px]">
                   <span className="font-bold text-base-content/90 flex items-center gap-1 mb-0.5">
                     <Sparkles size={12} className="text-primary" /> Daily Tip
