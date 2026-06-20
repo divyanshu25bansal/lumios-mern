@@ -70,7 +70,7 @@ export default function Header() {
 
         {/* Right Buttons */}
         <div
-          className={`flex items-center gap-3 transition-all duration-500 ${
+          className={`hidden sm:flex items-center gap-3 transition-all duration-500 ${
             showNavButtons
               ? "translate-y-0 opacity-100"
               : "pointer-events-none -translate-y-2 opacity-0"
@@ -92,11 +92,11 @@ export default function Header() {
         </div>
 
         {/* Mobile Menu */}
-        <div className="ml-auto lg:hidden">
+        {/* <div className="ml-auto lg:hidden">
           <button className="btn btn-circle btn-ghost text-white">
             <Menu size={22} />
           </button>
-        </div>
+        </div> */}
       </div>
     </header>
   );

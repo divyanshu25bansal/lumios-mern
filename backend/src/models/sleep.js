@@ -14,21 +14,25 @@ const sleepSchema = new mongoose.Schema(
       min: 0,
     },
 
+    sleepLogged: {
+      type: Boolean,
+    },
+
     quality: {
       type: Number,
-      required: true,
+      // required: true,
       min: 1,
       max: 5,
     },
 
     bedtime: {
       type: Date,
-      required: true,
+      // required: true,
     },
 
     wakeupTime: {
       type: Date,
-      required: true,
+      // required: true,
     },
 
     date: {
@@ -39,7 +43,7 @@ const sleepSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Sleep = mongoose.model("Sleep", sleepSchema);
