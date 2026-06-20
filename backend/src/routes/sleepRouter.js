@@ -5,10 +5,11 @@ import { getToday, getWeeklyDateRange } from "../utils/getDate.js";
 
 const sleepRouter = express.Router();
 
+const today = getToday();
+const weekDates = getWeeklyDateRange();
+
 sleepRouter.get("/sleep", verifyAuth, async (req, res) => {
   try {
-    const today = getToday();
-
     const sleep = await Sleep.findOne({
       userId: req.user._id,
       date: {
@@ -25,8 +26,6 @@ sleepRouter.get("/sleep", verifyAuth, async (req, res) => {
 sleepRouter.post("/sleep/create", verifyAuth, async (req, res) => {
   try {
     const { duration } = req.body;
-    const today = getToday();
-
     const sleepCreate = new Sleep({
       userId: req.user._id,
       duration,
@@ -43,8 +42,6 @@ sleepRouter.post("/sleep/create", verifyAuth, async (req, res) => {
 
 sleepRouter.get("/sleep/last-7-days", verifyAuth, async (req, res) => {
   try {
-    const weekDates = getWeeklyDateRange();
-
     const sleepHistory = await Sleep.find({
       userId: req.user._id,
       date: {
@@ -62,8 +59,6 @@ sleepRouter.get("/sleep/last-7-days", verifyAuth, async (req, res) => {
 sleepRouter.patch("/sleep/edit", verifyAuth, async (req, res) => {
   try {
     const { duration, sleepLogged } = req.body;
-    const today = getToday();
-    
     const sleep = await Sleep.findOneAndUpdate(
       {
         userId: req.user._id,
