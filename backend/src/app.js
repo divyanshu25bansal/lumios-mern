@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/dbConfig.js";
 import authRouter from "./routes/authRouter.js";
@@ -33,12 +32,6 @@ app.use("/", hydrationRouter);
 app.use("/", nutritionRouter);
 app.use("/", sleepRouter);
 app.use("/", profileRouter);
-
-app.use(express.static("dist"));
-
-app.get("/:any*", (req, res) => {
-  res.sendFile(path.resolve("dist", "index.html"));
-});
 
 app.get("/", (req, res) => {
   res.send("Hello Divyanshu!");
