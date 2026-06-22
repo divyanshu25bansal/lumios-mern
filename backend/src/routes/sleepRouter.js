@@ -1,19 +1,16 @@
 import express from "express";
 import { verifyAuth } from "../middleware/verifyAuth.js";
 import Sleep from "../models/sleep.js";
-import { getToday, getWeeklyDateRange } from "../utils/getDate.js";
+import { getDayKey } from "../utils/getDate.js";
 
 const sleepRouter = express.Router();
 
 sleepRouter.get("/sleep", verifyAuth, async (req, res) => {
   try {
-    const today = getToday();
+    const dayKey = getDayKey(req.user.timezone);
     const sleep = await Sleep.findOne({
       userId: req.user._id,
-      date: {
-        $gte: today.startDate,
-        $lte: today.endDate,
-      },
+      dayKey,
     });
     res.send(sleep);
   } catch (err) {
@@ -24,11 +21,11 @@ sleepRouter.get("/sleep", verifyAuth, async (req, res) => {
 sleepRouter.post("/sleep/create", verifyAuth, async (req, res) => {
   try {
     const { duration } = req.body;
-    const today = getToday();
+    const dayKey = getDayKey(req.user.timezone);
     const sleepCreate = new Sleep({
       userId: req.user._id,
       duration,
-      date: today.startDate,
+      dayKey,
       sleepLogged: false,
     });
     const sleep = await sleepCreate.save();
@@ -41,14 +38,10 @@ sleepRouter.post("/sleep/create", verifyAuth, async (req, res) => {
 
 sleepRouter.get("/sleep/last-7-days", verifyAuth, async (req, res) => {
   try {
-    const weekDates = getWeeklyDateRange();
+    const dayKey = getDayKey(req.user.timezone);
     const sleepHistory = await Sleep.find({
       userId: req.user._id,
-      date: {
-        $gte: weekDates.startDate,
-        $lte: weekDates.endDate,
-      },
-    }).sort({ date: 1 });
+    }).sort({ dayKey: -1 }).limit(7);
     res.send(sleepHistory);
   } catch (err) {
     console.log(err.message);
@@ -59,11 +52,11 @@ sleepRouter.get("/sleep/last-7-days", verifyAuth, async (req, res) => {
 sleepRouter.patch("/sleep/edit", verifyAuth, async (req, res) => {
   try {
     const { duration, sleepLogged } = req.body;
-    const today = getToday();
+    const dayKey = getDayKey(req.user.timezone);
     const sleep = await Sleep.findOneAndUpdate(
       {
         userId: req.user._id,
-        date: today.startDate,
+        dayKey,
       },
       {
         $set: {

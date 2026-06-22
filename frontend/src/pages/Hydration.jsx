@@ -19,8 +19,6 @@ export default function Hydration() {
   const [hydration, setHydration] = useState(null);
   const [last7DaysData, setLas7DaysData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const today = new Date(); // setting todays date
-  today.setHours(0, 0, 0, 0);
 
   useEffect(() => {
     if (!user?._id) return;
@@ -41,7 +39,6 @@ export default function Hydration() {
           {
             target: 2500,
             consumed: 0,
-            date: today,
           },
           {
             withCredentials: true,
@@ -125,7 +122,11 @@ export default function Hydration() {
                 </p>
               </div>
               <div className="text-xs font-semibold opacity-70 bg-base-100 px-3 py-1.5 rounded-xl border border-base-300">
-                Today, 20 May
+                Today,{" "}
+                {new Date(`${hydration.dayKey}`).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  day: "numeric",
+                })}
               </div>
             </div>
 

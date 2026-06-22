@@ -40,11 +40,21 @@ const sleepSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
+
+    dayKey: {
+      type: String,
+      required: true,
+    }
   },
   {
     timestamps: true,
   },
 );
+
+sleepSchema.index(
+  { userId: 1, daykey: 1 },
+  { unique: true }
+)
 
 const Sleep = mongoose.model("Sleep", sleepSchema);
 
