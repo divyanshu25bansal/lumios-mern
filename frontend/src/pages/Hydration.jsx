@@ -64,7 +64,7 @@ export default function Hydration() {
         withCredentials: true,
       });
 
-      const chartData = response.data.map((day) => ({
+      const chartData = response.data.reverse().map((day) => ({
         date: new Date(day.date).toLocaleDateString("en-IN", {
           day: "numeric",
           month: "short",

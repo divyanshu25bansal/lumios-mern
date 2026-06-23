@@ -90,7 +90,7 @@ export default function Sidebar({ children }) {
                   to={item.url}
                   onClick={closeDrawer}
                   className={({ isActive }) =>
-                    `flex! h-11 items-center gap-3 rounded-xl px-3 py-0 font-medium leading-none transition-all ${
+                    `flex! h-10 sm:h-12 items-center gap-3 rounded-xl px-3 py-0 font-medium leading-none transition-all ${
                       isActive
                         ? "bg-primary text-primary-content shadow-xs"
                         : "text-base-content/70 hover:bg-base-200 hover:text-base-content"
