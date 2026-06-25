@@ -496,36 +496,6 @@ export default function Habits() {
                     </div>
                   </div>
                 </div>
-
-                {/* Streaks Container metrics */}
-                <div className="rounded-3xl border border-base-300 bg-base-100 p-5 shadow-xs">
-                  <div className="mb-3">
-                    <h3 className="text-xs font-bold text-base-content opacity-80 uppercase tracking-wider">
-                      Habit Streaks
-                    </h3>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    {streakMetrics.map((streak, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-base-200/50 border border-base-300/60 rounded-xl p-2.5 text-center shadow-2xs"
-                      >
-                        <div className="flex items-baseline justify-center gap-0.5">
-                          <span className="text-base font-black text-base-content tracking-tight">
-                            {streak.value}
-                          </span>
-                          <Flame
-                            size={12}
-                            className={`${streak.color} fill-current`}
-                          />
-                        </div>
-                        <span className="text-[10px] font-bold opacity-40 mt-1 block truncate">
-                          {streak.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
