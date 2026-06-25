@@ -1,6 +1,6 @@
 export function PageLoader() {
   return (
-    <span class="skeleton skeleton-text text-2xl sm:text-4xl">
+    <span className="skeleton skeleton-text text-2xl sm:text-4xl">
       Syncing your body metrics...
     </span>
   );
