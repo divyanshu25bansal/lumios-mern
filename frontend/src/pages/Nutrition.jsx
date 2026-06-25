@@ -1,5 +1,5 @@
 import Sidebar from "../components/Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Flame,
   ChevronLeft,
@@ -14,10 +14,11 @@ import {
   Settings2,
   Check,
 } from "lucide-react";
+import axios from "axios";
+import { BASE_URL } from "../utils/constant";
 
 export default function Nutrition() {
-  const [isLoading, setIsLoading] = useState(true);
-  // State for making target goals fully user-editable
+  // Editable target goals
   const [goals, setGoals] = useState({
     calories: 2000,
     protein: 150,
@@ -28,15 +29,38 @@ export default function Nutrition() {
   const [isEditing, setIsEditing] = useState(false);
   const [tempGoals, setTempGoals] = useState({ ...goals });
 
-  // Static current values consumed today
-  const currentIntake = {
+  // Today's tracking state
+  const [currentIntake, setCurrentIntake] = useState({
     calories: 1480,
     protein: 90,
     carbs: 180,
     fats: 48,
-  };
+  });
 
-  // Dynamically calculate percentages for progress indicators
+  const [calories, setCalories] = useState("");
+  const [protein, setProtein] = useState("");
+  const [carbs, setCarbs] = useState("");
+  const [fats, setFats] = useState("");
+
+  // Meals Tracking list state
+  const [mealData, setMealData] = useState([]);
+  const [meals, setMeals] = useState([]);
+
+  // Modal & Form States
+  const [mealName, setMealName] = useState("");
+  const [mealType, setMealType] = useState("");
+
+  // Mocked Weekly Trends
+  const weeklyTrends = [
+    { day: "Mon", h: "75%" },
+    { day: "Tue", h: "60%" },
+    { day: "Wed", h: "80%" },
+    { day: "Thu", h: "95%" },
+    { day: "Fri", h: "70%" },
+    { day: "Sat", h: "50%" },
+    { day: "Sun", h: "85%" },
+  ];
+
   const stats = [
     {
       label: "Calories",
@@ -76,41 +100,99 @@ export default function Nutrition() {
     },
   ];
 
-  const recentMeals = [
-    {
-      name: "Oatmeal",
-      details: "Banana, Nuts",
-      kcal: "450 kcal",
-      time: "8:00 AM",
-    },
-    {
-      name: "Grilled Chicken",
-      details: "Rice, Salad",
-      kcal: "620 kcal",
-      time: "1:30 PM",
-    },
-    {
-      name: "Lentil Soup",
-      details: "Brown Bread",
-      kcal: "410 kcal",
-      time: "7:00 PM",
-    },
-  ];
-
-  const weeklyTrends = [
-    { day: "Mon", h: "75%" },
-    { day: "Tue", h: "60%" },
-    { day: "Wed", h: "80%" },
-    { day: "Thu", h: "95%" },
-    { day: "Fri", h: "70%" },
-    { day: "Sat", h: "50%" },
-    { day: "Sun", h: "85%" },
-  ];
-
   const handleSaveGoals = () => {
     setGoals({ ...tempGoals });
     setIsEditing(false);
   };
+
+  // backend logic
+  // 1. Fetch data on load. If the backend returns a blank slate, update the local component state.
+  const getMealsAndData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/nutrition`, {
+        withCredentials: true,
+      });
+
+      if (response.data) {
+        setMealData(response.data);
+        setMeals(response.data.meals || []);
+
+        // Sync macro tracking card rings with database values
+        setCurrentIntake({
+          calories: response.data.totalCalories || 0,
+          protein: response.data.totalProtein || 0,
+          carbs: response.data.totalCarbs || 0,
+          fats: response.data.totalFats || 0,
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching daily log:", err.message);
+    }
+  };
+
+  // 2. Explicitly submit a meal log entry using user-entered modal data
+  const createMeal = async () => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/nutrition`,
+        {
+          mealName: mealName,
+          mealType: mealType,
+          calories: Number(calories) || 0,
+          protein: Number(protein) || 0,
+          carbs: Number(carbs) || 0,
+          fats: Number(fats) || 0,
+        },
+        { withCredentials: true },
+      );
+
+      if (response.data) {
+        // The backend returns the full, updated day object back to us!
+        setMealData(response.data);
+        setMeals(response.data.meals || []);
+
+        // Update the progress dashboards instantly
+        setCurrentIntake({
+          calories: response.data.totalCalories,
+          protein: response.data.totalProtein,
+          carbs: response.data.totalCarbs,
+          fats: response.data.totalFats,
+        });
+      }
+    } catch (err) {
+      console.error("Error saving new meal item:", err.message);
+    }
+  };
+
+  // 3. Form submit handler orchestrating the network requests
+  const handleAddMealSubmit = async (e) => {
+    e.preventDefault();
+    if (!mealName.trim() || !mealType.trim()) return;
+
+    try {
+      // Await the creation execution so local state updates correctly
+      await createMeal();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      // Reset inputs & close UI modal elements safely
+      setMealName("");
+      setMealType(""); // Fallback to default enum option
+
+      setCalories("");
+      setProtein("");
+      setCarbs("");
+      setFats("");
+      document.getElementById("add_meal_modal").close();
+    }
+  };
+
+  // 4. Component initial mount tracker
+  useEffect(() => {
+    getMealsAndData();
+  }, []);
+
+  console.log(meals);
 
   return (
     <Sidebar>
@@ -128,19 +210,17 @@ export default function Nutrition() {
             </div>
 
             <div className="flex-col flex sm:flex-row sm:items-center gap-2 self-end sm:self-auto">
-              <div className="join overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm h-8">
-                <button className="btn btn-ghost btn-xs join-item px-2">
-                  <ChevronLeft size={13} className="text-base-content/80" />
-                </button>
-                <button className="btn btn-ghost btn-xs join-item normal-case font-bold text-[11px] px-2.5 text-base-content/80">
-                  Today, 20 May
-                </button>
-                <button className="btn btn-ghost btn-xs join-item px-2">
-                  <ChevronRight size={13} className="text-base-content/80" />
-                </button>
-              </div>
+              <span className="text-xs font-semibold opacity-70 bg-base-100 px-3 py-1.5 rounded-xl border border-base-300">
+                Today, 20 May
+              </span>
 
-              <button className="btn btn-xs border-0 rounded-xl bg-primary text-primary-content hover:bg-primary/90 font-bold capitalize h-8 px-3 text-xs shadow-xs">
+              {/* Add Meal Button triggering Modal */}
+              <button
+                onClick={() =>
+                  document.getElementById("add_meal_modal").showModal()
+                }
+                className="btn btn-xs border-0 rounded-xl bg-primary text-primary-content hover:bg-primary/90 font-bold capitalize h-8 px-3 text-xs shadow-xs"
+              >
                 <Plus size={13} className="mr-0.5" /> Add Meal
               </button>
             </div>
@@ -246,24 +326,25 @@ export default function Nutrition() {
                 </div>
 
                 <div className="space-y-2">
-                  {recentMeals.map((meal, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between rounded-xl bg-base-200/50 p-2.5 border border-base-300/30"
-                    >
-                      <div>
-                        <p className="text-xs font-bold text-base-content">
-                          {meal.name}
-                        </p>
-                        <p className="text-[10px] opacity-40 font-semibold mt-0.5">
-                          {meal.details} • {meal.time}
-                        </p>
+                  {meals &&
+                    meals.map((meal, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between rounded-xl bg-base-200/50 p-2.5 border border-base-300/30"
+                      >
+                        <div>
+                          <p className="text-xs font-bold text-base-content">
+                            {meal.mealName}
+                          </p>
+                          <p className="text-[10px] opacity-40 font-semibold mt-0.5">
+                            {meal.mealType}
+                          </p>
+                        </div>
+                        <span className="text-xs font-black text-base-content/80 bg-base-100 border border-base-300/60 px-2.5 py-0.5 rounded-lg">
+                          {meal.calories} kcal
+                        </span>
                       </div>
-                      <span className="text-xs font-black text-base-content/80 bg-base-100 border border-base-300/60 px-2.5 py-0.5 rounded-lg">
-                        {meal.kcal}
-                      </span>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             </div>
@@ -298,7 +379,6 @@ export default function Nutrition() {
                 </div>
 
                 <div className="space-y-2.5 text-[11px]">
-                  {/* Calorie Goal Row */}
                   <div className="flex items-center justify-between">
                     <span className="font-semibold opacity-50">
                       Calories target
@@ -325,7 +405,6 @@ export default function Nutrition() {
                     )}
                   </div>
 
-                  {/* Protein Goal Row */}
                   <div className="flex items-center justify-between">
                     <span className="font-semibold opacity-50">
                       Protein target
@@ -352,7 +431,6 @@ export default function Nutrition() {
                     )}
                   </div>
 
-                  {/* Carbs Goal Row */}
                   <div className="flex items-center justify-between">
                     <span className="font-semibold opacity-50">
                       Carbs target
@@ -379,7 +457,6 @@ export default function Nutrition() {
                     )}
                   </div>
 
-                  {/* Fats Goal Row */}
                   <div className="flex items-center justify-between">
                     <span className="font-semibold opacity-50">
                       Fats target
@@ -452,6 +529,80 @@ export default function Nutrition() {
           </div>
         </div>
       </main>
+
+      {/* DaisyUI Dialog Modal implementation */}
+      <dialog
+        id="add_meal_modal"
+        className="modal modal-bottom sm:modal-middle"
+      >
+        <div className="modal-box bg-base-100 border border-base-300">
+          <h3 className="font-bold text-lg text-base-content mb-4 flex items-center gap-2">
+            <Utensils size={18} className="text-primary" /> Add New Meal
+          </h3>
+
+          <form onSubmit={handleAddMealSubmit} className="space-y-4">
+            {/* Meal Input */}
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text font-bold text-xs opacity-70">
+                  Meal Name
+                </span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g., Egg White Omelette"
+                value={mealName}
+                onChange={(e) => setMealName(e.target.value)}
+                className="input input-bordered w-full text-sm bg-base-200 text-base-content focus:outline-primary"
+                required
+              />
+            </div>
+
+            {/* Time Slot Select */}
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text font-bold text-xs opacity-70">
+                  Time Period
+                </span>
+              </label>
+              <select
+                value={mealType}
+                onChange={(e) => setMealType(e.target.value)}
+                className="select select-bordered w-full text-sm bg-base-200 text-base-content focus:outline-primary"
+              >
+                <option value="">Select Meal Type</option>
+                <option value="Breakfast">Breakfast</option>
+                <option value="Lunch">Lunch</option>
+                <option value="Snack">Snack</option>
+                <option value="Dinner">Dinner</option>
+              </select>
+            </div>
+
+            {/* Actions Panel */}
+            <div className="modal-action mt-6">
+              <button
+                type="button"
+                onClick={() =>
+                  document.getElementById("add_meal_modal").close()
+                }
+                className="btn btn-sm btn-ghost capitalize text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-sm btn-primary capitalize text-xs px-4"
+              >
+                Save Meal
+              </button>
+            </div>
+          </form>
+        </div>
+        {/* Click outside backdrop close layer */}
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </Sidebar>
   );
 }
