@@ -127,7 +127,7 @@ export default function SleepBoard() {
       const response = await axios.get(`${BASE_URL}/sleep/last-7-days`, {
         withCredentials: true,
       });
-      setSleepHistory(response.data || []);
+      setSleepHistory(response.data.reverse() || []);
     } catch (err) {
       console.error(err.message);
     }
