@@ -29,37 +29,24 @@ export default function Nutrition() {
   const [isEditing, setIsEditing] = useState(false);
   const [tempGoals, setTempGoals] = useState({ ...goals });
 
-  // Today's tracking state
+  // Today's tracking state, synced from the backend once /nutrition resolves
   const [currentIntake, setCurrentIntake] = useState({
-    calories: 1480,
-    protein: 90,
-    carbs: 180,
-    fats: 48,
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fats: 0,
   });
 
-  const [calories, setCalories] = useState("");
-  const [protein, setProtein] = useState("");
-  const [carbs, setCarbs] = useState("");
-  const [fats, setFats] = useState("");
-
   // Meals Tracking list state
-  const [mealData, setMealData] = useState([]);
   const [meals, setMeals] = useState([]);
 
   // Modal & Form States
   const [mealName, setMealName] = useState("");
   const [mealType, setMealType] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Mocked Weekly Trends
-  const weeklyTrends = [
-    { day: "Mon", h: "75%" },
-    { day: "Tue", h: "60%" },
-    { day: "Wed", h: "80%" },
-    { day: "Thu", h: "95%" },
-    { day: "Fri", h: "70%" },
-    { day: "Sat", h: "50%" },
-    { day: "Sun", h: "85%" },
-  ];
+  // Weekly Trends, sourced from the last 7 daily documents
+  const [weeklyTrends, setWeeklyTrends] = useState([]);
 
   const stats = [
     {
@@ -106,7 +93,7 @@ export default function Nutrition() {
   };
 
   // backend logic
-  // 1. Fetch data on load. If the backend returns a blank slate, update the local component state.
+  // 1. Fetch today's log on load, syncing the macro rings with database values
   const getMealsAndData = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/nutrition`, {
@@ -114,10 +101,8 @@ export default function Nutrition() {
       });
 
       if (response.data) {
-        setMealData(response.data);
         setMeals(response.data.meals || []);
 
-        // Sync macro tracking card rings with database values
         setCurrentIntake({
           calories: response.data.totalCalories || 0,
           protein: response.data.totalProtein || 0,
@@ -130,69 +115,90 @@ export default function Nutrition() {
     }
   };
 
-  // 2. Explicitly submit a meal log entry using user-entered modal data
-  const createMeal = async () => {
+  // 2. Fetch the last 7 daily documents for the weekly trend chart
+  const getWeeklyTrends = async () => {
     try {
-      const response = await axios.post(
-        `${BASE_URL}/nutrition`,
-        {
-          mealName: mealName,
-          mealType: mealType,
-          calories: Number(calories) || 0,
-          protein: Number(protein) || 0,
-          carbs: Number(carbs) || 0,
-          fats: Number(fats) || 0,
-        },
-        { withCredentials: true },
-      );
+      const response = await axios.get(`${BASE_URL}/nutrition/last-7-days`, {
+        withCredentials: true,
+      });
 
       if (response.data) {
-        // The backend returns the full, updated day object back to us!
-        setMealData(response.data);
-        setMeals(response.data.meals || []);
-
-        // Update the progress dashboards instantly
-        setCurrentIntake({
-          calories: response.data.totalCalories,
-          protein: response.data.totalProtein,
-          carbs: response.data.totalCarbs,
-          fats: response.data.totalFats,
-        });
+        // backend returns most-recent-first; chart reads left-to-right chronologically
+        const chronological = [...response.data].reverse();
+        setWeeklyTrends(
+          chronological.map((day) => {
+            const [year, month, date] = day.dayKey.split("/").map(Number);
+            const label = new Date(year, month - 1, date).toLocaleDateString(
+              "en-US",
+              { weekday: "short" },
+            );
+            return { day: label, totalCalories: day.totalCalories };
+          }),
+        );
       }
     } catch (err) {
-      console.error("Error saving new meal item:", err.message);
+      console.error("Error fetching weekly trends:", err.message);
     }
   };
 
-  // 3. Form submit handler orchestrating the network requests
+  // 3. Ask Gemini to estimate macros for the meal name, then persist the meal
+  const createMeal = async () => {
+    const geminiResponse = await axios.post(
+      `${BASE_URL}/gemini-response`,
+      { mealName },
+      { withCredentials: true },
+    );
+
+    const macros = geminiResponse.data.data;
+
+    const response = await axios.post(
+      `${BASE_URL}/nutrition/meal-create`,
+      {
+        mealName,
+        mealType,
+        calories: macros.calories,
+        protein: macros.protein,
+        carbs: macros.carbs,
+        fats: macros.fats,
+      },
+      { withCredentials: true },
+    );
+
+    if (response.data) {
+      setMeals(response.data.meals || []);
+      setCurrentIntake({
+        calories: response.data.totalCalories || 0,
+        protein: response.data.totalProtein || 0,
+        carbs: response.data.totalCarbs || 0,
+        fats: response.data.totalFats || 0,
+      });
+    }
+  };
+
+  // 4. Form submit handler orchestrating the network requests
   const handleAddMealSubmit = async (e) => {
     e.preventDefault();
     if (!mealName.trim() || !mealType.trim()) return;
 
     try {
-      // Await the creation execution so local state updates correctly
+      setIsSubmitting(true);
       await createMeal();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      // Reset inputs & close UI modal elements safely
+      await getWeeklyTrends();
       setMealName("");
-      setMealType(""); // Fallback to default enum option
-
-      setCalories("");
-      setProtein("");
-      setCarbs("");
-      setFats("");
+      setMealType("");
       document.getElementById("add_meal_modal").close();
+    } catch (err) {
+      console.error("Error saving new meal item:", err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // 4. Component initial mount tracker
+  // 5. Component initial mount tracker
   useEffect(() => {
     getMealsAndData();
+    getWeeklyTrends();
   }, []);
-
-  console.log(meals);
 
   return (
     <Sidebar>
@@ -211,7 +217,11 @@ export default function Nutrition() {
 
             <div className="flex-col flex sm:flex-row sm:items-center gap-2 self-end sm:self-auto">
               <span className="text-xs font-semibold opacity-70 bg-base-100 px-3 py-1.5 rounded-xl border border-base-300">
-                Today, 20 May
+                Today,{" "}
+                {new Date().toLocaleDateString("en-US", {
+                  day: "numeric",
+                  month: "short",
+                })}
               </span>
 
               {/* Add Meal Button triggering Modal */}
@@ -496,20 +506,26 @@ export default function Nutrition() {
                   </span>
                 </div>
                 <div className="flex h-28 items-end justify-between gap-1 border-b border-base-300 pb-1">
-                  {weeklyTrends.map((bar, idx) => (
-                    <div
-                      key={idx}
-                      className="flex-1 flex flex-col items-center justify-end h-full group"
-                    >
+                  {weeklyTrends.map((bar, idx) => {
+                    const heightPct = Math.min(
+                      (bar.totalCalories / goals.calories) * 100,
+                      100,
+                    );
+                    return (
                       <div
-                        className="w-full max-w-2.5 bg-primary/80 group-hover:bg-primary rounded-t transition-all duration-300"
-                        style={{ height: bar.h }}
-                      />
-                      <span className="text-[8px] font-bold opacity-40 mt-1.5">
-                        {bar.day}
-                      </span>
-                    </div>
-                  ))}
+                        key={idx}
+                        className="flex-1 flex flex-col items-center justify-end h-full group"
+                      >
+                        <div
+                          className="w-full max-w-2.5 bg-primary/80 group-hover:bg-primary rounded-t transition-all duration-300"
+                          style={{ height: `${heightPct}%` }}
+                        />
+                        <span className="text-[8px] font-bold opacity-40 mt-1.5">
+                          {bar.day}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -591,9 +607,14 @@ export default function Nutrition() {
               </button>
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="btn btn-sm btn-primary capitalize text-xs px-4"
               >
-                Save Meal
+                {isSubmitting ? (
+                  <span className="loading loading-spinner loading-xs"></span>
+                ) : (
+                  "Save Meal"
+                )}
               </button>
             </div>
           </form>

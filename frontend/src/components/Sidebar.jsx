@@ -25,7 +25,6 @@ const menuItems = [
   { name: "Habits", icon: CheckSquare, url: "/habits" },
   { name: "Nutrition", icon: Apple, url: "/nutrition" },
   { name: "AI Companion", icon: Bot, url: "/companion" },
-  { name: "Reports", icon: BarChart3, url: "/reports" },
   { name: "Profile", icon: User, url: "/profile" },
 ];
 

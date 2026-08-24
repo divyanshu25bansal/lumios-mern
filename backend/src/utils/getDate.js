@@ -15,6 +15,18 @@ export function getDayKey(timezone) {
   return `${year}/${month}/${day}`;
 }
 
+// parse a "YYYY/MM/DD" dayKey (as produced by getDayKey) into a Date
+export function parseDayKey(dayKey) {
+  const [year, month, day] = dayKey.split("/").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+// whole-day difference between two dayKey Dates, laterDate - earlierDate
+export function diffInDays(laterDate, earlierDate) {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  return Math.round((laterDate.getTime() - earlierDate.getTime()) / msPerDay);
+}
+
 
 export function getToday() {
   const endDate = new Date();
