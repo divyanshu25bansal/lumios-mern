@@ -123,6 +123,7 @@ export default function Habits() {
     // Determine the next target value based on current completion status
     const isCurrentlyDone = habit.lastCompletedDate === currentTodayStr;
     const nextCompletedDateValue = isCurrentlyDone ? null : currentTodayStr;
+    const job = isCurrentlyDone ? "uncomplete" : "complete";
 
     // 1. Instantly update UI layout state
     setHabits((prevHabits) =>
@@ -133,16 +134,20 @@ export default function Habits() {
       ),
     );
 
-    // 2. Dispatch to your backend API route matching your controllers
+    // 2. Dispatch to backend, then reconcile with the server-computed streak values
     try {
-      await axios.patch(
+      const response = await axios.patch(
         `${BASE_URL}/habit/${habit._id}`,
-        {
-          job: "complete",
-          habit,
-        },
+        { job },
         { withCredentials: true },
       );
+      if (response.data) {
+        setHabits((prevHabits) =>
+          prevHabits.map((h) =>
+            h._id === habit._id ? { ...h, ...response.data } : h,
+          ),
+        );
+      }
     } catch (err) {
       console.error(
         "Failed to sync progress to database, rolling back UI.",

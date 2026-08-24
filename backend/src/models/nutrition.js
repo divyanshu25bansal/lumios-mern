@@ -81,7 +81,7 @@ const dailyNutritionSchema = new mongoose.Schema(
 );
 
 // CRITICAL: Compound index ensuring a user can only have ONE document per specific day string
-dailyNutritionSchema.index({ userId: 1, dateString: 1 }, { unique: true });
+dailyNutritionSchema.index({ userId: 1, dayKey: 1 }, { unique: true });
 
 const DailyNutrition = mongoose.model("DailyNutrition", dailyNutritionSchema);
 

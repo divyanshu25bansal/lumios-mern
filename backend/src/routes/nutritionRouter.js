@@ -1,34 +1,20 @@
 import express from "express";
 import { getDayKey } from "../utils/getDate.js";
 import { verifyAuth } from "../middleware/verifyAuth.js";
-import DailyNutrition from "../models/nutrition.js";
+import {
+  getOrCreateToday,
+  getLastNDays,
+  addMeal,
+  removeMeal,
+} from "../services/nutritionService.js";
 
 const nutritionRouter = express.Router();
 
-// GET: Fetch today's single summary document (Initializes a clean document if missing)
+// GET: today's summary document (auto-creates an empty one if missing)
 nutritionRouter.get("/nutrition", verifyAuth, async (req, res) => {
   try {
     const today = getDayKey(req.user.timezone);
-
-    let nutrition = await DailyNutrition.findOne({
-      userId: req.user._id,
-      dayKey: today
-    });
-
-    // If it doesn't exist yet, we create a completely empty base layout
-    if (!nutrition) {
-      nutrition = new DailyNutrition({
-        userId: req.user._id,
-        dayKey: today,
-        totalCalories: 0,
-        totalProtein: 0,
-        totalCarbs: 0,
-        totalFats: 0,
-        meals: [] // Enforces absolute empty array initialization
-      });
-      await nutrition.save();
-    }
-
+    const nutrition = await getOrCreateToday(req.user._id, today);
     res.status(200).send(nutrition);
   } catch (err) {
     res.status(400).send({
@@ -38,57 +24,40 @@ nutritionRouter.get("/nutrition", verifyAuth, async (req, res) => {
   }
 });
 
-// POST: Explicitly add a new meal item (Only logs exactly what the user sent)
-nutritionRouter.post("/nutrition", verifyAuth, async (req, res) => {
+// GET: last 7 daily documents, most recent first (for weekly trend charts)
+nutritionRouter.get("/nutrition/last-7-days", verifyAuth, async (req, res) => {
+  try {
+    const history = await getLastNDays(req.user._id, 7);
+    res.status(200).send(history);
+  } catch (err) {
+    res.status(400).send({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
+// POST: append a meal to today's document, creating it first if this is the day's first meal
+nutritionRouter.post("/nutrition/meal-create", verifyAuth, async (req, res) => {
   try {
     const today = getDayKey(req.user.timezone);
     const { mealName, mealType, calories, protein, carbs, fats } = req.body;
 
-    // Guard Clause: Prevent creating phantom blank meals if name/type are completely omitted
     if (!mealName || !mealType) {
       return res.status(400).send({
         success: false,
-        message: "Meal Name and Meal Type are required to log an entry."
+        message: "Meal Name and Meal Type are required to log an entry.",
       });
     }
 
-    // Safely parse number parameters to prevent NaN pollution
-    const parsedCalories = Number(calories) || 0;
-    const parsedProtein = Number(protein) || 0;
-    const parsedCarbs = Number(carbs) || 0;
-    const parsedFats = Number(fats) || 0;
-
-    const updatedNutrition = await DailyNutrition.findOneAndUpdate(
-      {
-        userId: req.user._id,
-        dayKey: today
-      },
-      {
-        // 1. Appends ONLY the genuine meal details input by the client
-        $push: {
-          meals: {
-            mealName,
-            mealType,
-            calories: parsedCalories,
-            protein: parsedProtein,
-            carbs: parsedCarbs,
-            fats: parsedFats
-          }
-        },
-        // 2. Increments the daily metrics using clean numerical numbers
-        $inc: {
-          totalCalories: parsedCalories,
-          totalProtein: parsedProtein,
-          totalCarbs: parsedCarbs,
-          totalFats: parsedFats
-        }
-      },
-      {
-        upsert: true, // Safety fallback layer if initialized out-of-order
-        returnDocument: "after", // Replaces older deprecated returnDocument variants 
-        runValidators: true
-      }
-    );
+    const updatedNutrition = await addMeal(req.user._id, today, {
+      mealName,
+      mealType,
+      calories,
+      protein,
+      carbs,
+      fats,
+    });
 
     res.status(200).send(updatedNutrition);
   } catch (err) {
@@ -99,12 +68,26 @@ nutritionRouter.post("/nutrition", verifyAuth, async (req, res) => {
   }
 });
 
-nutritionRouter.patch("/nutrition/meal-create", verifyAuth, async (req, res) => {
-  res.send("nutrition patch");
-});
+// DELETE: remove a single meal from today's document and roll back its totals
+nutritionRouter.delete("/nutrition/meal/:mealId", verifyAuth, async (req, res) => {
+  try {
+    const today = getDayKey(req.user.timezone);
+    const updatedNutrition = await removeMeal(req.user._id, today, req.params.mealId);
 
-nutritionRouter.delete("/nutrition/:id", verifyAuth, async (req, res) => {
-  res.send("nutrition delete");
+    if (!updatedNutrition) {
+      return res.status(404).send({
+        success: false,
+        message: "Meal not found in today's log.",
+      });
+    }
+
+    res.status(200).send(updatedNutrition);
+  } catch (err) {
+    res.status(400).send({
+      success: false,
+      message: err.message,
+    });
+  }
 });
 
 export default nutritionRouter;
