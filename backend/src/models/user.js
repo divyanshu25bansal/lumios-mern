@@ -83,6 +83,10 @@ const userSchema = new mongoose.Schema(
         "Improve Consistency",
       ],
     },
+    timezone: {
+      type: String,
+      default: "IST",
+    },
   },
   { timestamps: true },
 );

@@ -15,10 +15,22 @@ import Hydration from "../pages/Hydration";
 import Nutrition from "../pages/Nutrition";
 import Habits from "../pages/Habits";
 import SleepBoard from "../pages/Sleep";
+import Companion from "../pages/Companion";
 
 export default function AuthLoader() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, theme, setTheme } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      const currentTheme = localStorage.getItem("data-theme") || "light";
+      document.documentElement.setAttribute("data-theme", currentTheme);
+      setTheme(currentTheme);
+    } else {
+      const currentTheme = "abyss";
+      document.documentElement.setAttribute("data-theme", currentTheme);
+    }
+  }, [theme, user]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -91,6 +103,7 @@ export default function AuthLoader() {
         <Route path="/nutrition" element={<Nutrition />} />
         <Route path="/habits" element={<Habits />} />
         <Route path="/sleep" element={<SleepBoard />} />
+        <Route path="/companion" element={<Companion />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

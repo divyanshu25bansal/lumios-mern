@@ -9,6 +9,8 @@ import hydrationRouter from "./routes/hydrationRouter.js";
 import nutritionRouter from "./routes/nutritionRouter.js";
 import habitsRouter from "./routes/habitsRouter.js";
 import profileRouter from "./routes/profileRouter.js";
+import gemini_router from "./routes/gemini_services.js"
+import assistantRouter from "./routes/assistantRouter.js"
 
 dotenv.config();
 
@@ -17,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.VITE_BASE_URL || "http://localhost:5173",
     credentials: true,
   }),
 );
@@ -32,6 +34,8 @@ app.use("/", hydrationRouter);
 app.use("/", nutritionRouter);
 app.use("/", sleepRouter);
 app.use("/", profileRouter);
+app.use("/", gemini_router)
+app.use("/", assistantRouter)
 
 app.get("/", (req, res) => {
   res.send("Hello Divyanshu!");

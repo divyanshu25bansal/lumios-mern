@@ -12,11 +12,14 @@ authRouter.post("/signup", async (req, res) => {
     const { firstName, lastName, email, password } = req.body.authDetails;
     const passwordHash = await bcrypt.hash(password, 10); // hashing password
 
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; // settings timezone of the user
+
     const newUser = new User({
       firstName,
       lastName,
       email,
       password: passwordHash,
+      timezone,
     });
 
     const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET);

@@ -413,3 +413,71 @@ This branch focused on completing the remaining user-facing pages, integrating b
 5. Daily tracking applications require careful handling of dates and user state.
 6. Guided workflows are often more effective than complex manual input systems.
 7. Consistent UI patterns create a more professional and maintainable application.
+
+## branch -> date/timzone-fix
+## Overview
+
+This PR refactors hydration date handling to use a timezone-aware `dayKey` instead of relying on client-generated date values. It also updates the hydration UI to display dates dynamically based on the hydration record.
+
+## Changes
+
+### Added
+
+* Introduced `getDayKey(timezone)` utility to generate a consistent `YYYY/MM/DD` date key using a specified timezone.
+
+### Removed
+
+* Removed local `today` date initialization and normalization from `Hydration.jsx`.
+* Removed the `date` field from hydration record creation requests.
+
+### Updated
+
+* Replaced the hardcoded `"Today, 20 May"` label with a dynamic date derived from `hydration.dayKey`.
+* Updated the UI to display the correct day information for the current hydration record.
+
+## Benefits
+
+* Ensures consistent date handling across different timezones.
+* Eliminates dependency on client-side date calculations.
+* Reduces the risk of hydration records being assigned to the wrong day due to timezone differences.
+* Makes the hydration date display dynamic and data-driven.
+
+
+## branch update/habits
+# Summary
+
+## Habit Management
+
+* Added dynamic habit tracking system
+* Added habit creation functionality
+* Added habit categorization (Morning, Afternoon, Night)
+* Added habit filtering by category
+* Added habit completion tracking
+* Added habit streak tracking
+* Added expandable habit details view
+
+## Dashboard & Analytics
+
+* Added dynamic completion metrics
+* Updated habit analytics dashboard
+* Improved progress visualization
+
+## Hydration & Sleep
+
+* Fixed hydration history ordering
+* Fixed sleep history ordering
+
+## UI/UX Improvements
+
+* Added loading states
+* Improved mobile responsiveness
+* Updated sidebar navigation sizing
+* Improved habits page layout
+* Added responsive modal interface
+* Updated date display handling
+
+## Performance & Reliability
+
+* Added optimistic UI updates
+* Improved data synchronization
+* Enhanced date and timezone handling

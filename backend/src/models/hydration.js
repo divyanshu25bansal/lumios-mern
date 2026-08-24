@@ -25,11 +25,22 @@ const hydrationSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
+
+    dayKey: {
+      type: String,
+      required: true,
+    }
   },
   {
     timestamps: true,
   }
 );
+
+hydrationSchema.index(
+  { userId: 1, dayKey: 1 },
+  { unique: true }
+);
+
 
 const Hydration = mongoose.model("Hydration", hydrationSchema);
 

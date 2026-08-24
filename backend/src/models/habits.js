@@ -16,6 +16,19 @@ const habitSchema = new mongoose.Schema(
       maxlength: 50,
     },
 
+    duration: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    habitTime: {
+      type: String,
+      required: true,
+      trim: true,
+      enum: ["morning", "afternoon", "night"]
+    },
+
     currentStreak: {
       type: Number,
       default: 0,
@@ -29,7 +42,7 @@ const habitSchema = new mongoose.Schema(
     },
 
     lastCompletedDate: {
-      type: Date,
+      type: String,
       default: null,
     },
   },

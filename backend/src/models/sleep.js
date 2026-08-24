@@ -14,21 +14,25 @@ const sleepSchema = new mongoose.Schema(
       min: 0,
     },
 
+    sleepLogged: {
+      type: Boolean,
+    },
+
     quality: {
       type: Number,
-      required: true,
+      // required: true,
       min: 1,
       max: 5,
     },
 
     bedtime: {
       type: Date,
-      required: true,
+      // required: true,
     },
 
     wakeupTime: {
       type: Date,
-      required: true,
+      // required: true,
     },
 
     date: {
@@ -36,11 +40,21 @@ const sleepSchema = new mongoose.Schema(
       required: true,
       default: Date.now,
     },
+
+    dayKey: {
+      type: String,
+      required: true,
+    }
   },
   {
     timestamps: true,
-  }
+  },
 );
+
+sleepSchema.index(
+  { userId: 1, daykey: 1 },
+  { unique: true }
+)
 
 const Sleep = mongoose.model("Sleep", sleepSchema);
 
